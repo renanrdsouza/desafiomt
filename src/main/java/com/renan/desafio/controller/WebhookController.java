@@ -3,6 +3,7 @@ package com.renan.desafio.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.renan.desafio.dto.WebhookEvent;
 import com.renan.desafio.service.WebhookService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ public class WebhookController {
     @Autowired
     private WebhookService service;
 
+    @Operation(hidden = true)
     @PostMapping("/contact-creation")
     public ResponseEntity<Void> handleContactCreationWebhook(
             @RequestBody List<WebhookEvent> payload,

@@ -3,6 +3,7 @@ package com.renan.desafio.controller;
 import com.renan.desafio.dto.ContactData;
 import com.renan.desafio.service.ContactService;
 import com.renan.desafio.service.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class ContactController {
     @Autowired
     private TokenService tokenService;
 
+    @Operation(description = "Create a new contact")
     @PostMapping
     public ResponseEntity<String> createContact(@RequestBody ContactData contactData) {
         log.info("Processing contact creation");

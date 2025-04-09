@@ -2,6 +2,7 @@ package com.renan.desafio.controller;
 
 import com.renan.desafio.dto.AuthorizationUrl;
 import com.renan.desafio.service.AuthorizationService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class OAuthController {
     @Autowired
     private AuthorizationService service;
 
+    @Operation(description = "Generate authorization URL")
     @GetMapping("/authorize")
     public ResponseEntity<AuthorizationUrl> generateAuthorizationUrl() {
         log.info("Processing authorization URL");
@@ -25,6 +27,7 @@ public class OAuthController {
         return ResponseEntity.ok(service.buildAuthorizationUrl());
     }
 
+    @Operation(hidden = true)
     @GetMapping("/callback")
     public ResponseEntity<String> processOAuthCallback(@RequestParam("code") String authorizationCode) {
         log.info("Processing OAuth callback with authorization code");
