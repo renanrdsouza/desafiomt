@@ -67,6 +67,11 @@ Este documento descreve as decisões técnicas tomadas durante o desenvolvimento
 5. **Deploy**:
     - Configurar pipelines CI/CD para automação de build, testes e deploy.
 
+6. **Aplicar boas práticas de Clean Architecture**:
+    - Aplicar o padrão de design Ports and Adapters (Hexagonal Architecture) para desacoplar a lógica de negócios da infraestrutura.
+    - Separar melhor as camadas de domínio, aplicação e infraestrutura.
+    - Implementar testes de unidade e integração mais abrangentes.
+
 ---
 
 ## 5. Como Executar o Projeto
