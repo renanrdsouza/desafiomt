@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.renan.desafio.dto.WebhookEvent;
 import com.renan.desafio.exceptions.InvalidSignatureException;
+import com.renan.desafio.kafka.producer.WebhookEventRequestProducer;
 import com.renan.desafio.util.SignatureValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,32 @@ public class WebhookService {
     @Autowired
     private SignatureValidator signatureValidator;
 
+    @Autowired
+    private WebhookEventRequestProducer webhookEventRequestProducer;
+
     public void processWebhookEvent(List<WebhookEvent> payload, String signature) throws JsonProcessingException {
         log.info("Starting webhook processing");
 
         validatePayload(payload);
         validateSignature(payload, signature);
 
-        //TODO -> Como não foi especificado o que seria "processar o webhook", fica a critério do desenvolvedor
-        // Aqui você pode adicionar a lógica para processar o webhook, como salvar os dados no banco de dados ou enviar uma notificação.
-        // Ou enviar o evento para uma fila rabbitMQ ou um tópico Kafka.
+        /*
+        * Como não foi especificado o que seria "processar o webhook", fica a critério do desenvolvedor
+        * Neste caso, o processamento é enviar o evento para o Kafka, apenas para fins de exemplo.
+        * */
+        try {
+            log.info("Payload: {}", objectMapper.writeValueAsString(payload));
 
-        log.info("Webhook processed successfully");
+            webhookEventRequestProducer.sendMessage(payload);;
+
+            log.info("Webhook event sent to Kafka topic");
+        } catch (JsonProcessingException e) {
+            log.error("Error processing webhook event: {}", e.getMessage());
+            throw new JsonProcessingException("Error processing webhook event", e) {};
+        } catch (Exception e) {
+            log.error("Error sending webhook event to Kafka topic: {}", e.getMessage());
+            throw new RuntimeException("Error sending webhook event to Kafka topic", e);
+        }
     }
 
     private void validatePayload(List<WebhookEvent> payload) {

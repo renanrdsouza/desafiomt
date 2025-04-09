@@ -63,8 +63,6 @@ public class AuthorizationService {
     }
 
     public String processOauthCallback(String authorizationCode) {
-        log.info("Processing OAuth callback");
-
         try {
             ResponseEntity<TokenResponse> response = requestToken(authorizationCode);
             validateTokenResponse(response);
