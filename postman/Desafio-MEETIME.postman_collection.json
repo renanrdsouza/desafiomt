@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "0d57c00e-5298-46e1-90e6-c8eed189906c",
+		"name": "Desafio MEETIME",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19254372"
+	},
+	"item": [
+		{
+			"name": "BUILD AUTHORIZATION URL",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "277afac0-062e-46bd-a173-59f1fb1501d3",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/oauth/authorize",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"oauth",
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAUTH CALLBACK",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "308aa18b-cad6-42e5-be9b-b05c17734369",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/oauth/callback?code=na1-6c06-6fd2-42f3-8d3b-418197f9a19f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"oauth",
+						"callback"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "na1-6c06-6fd2-42f3-8d3b-418197f9a19f"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CONTACTS",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "277afac0-062e-46bd-a173-59f1fb1501d3",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"properties\": {\n    \"email\": \"exemplo56@teste.com\",\n    \"firstname\": \"Renan\",\n    \"lastname\": \"da Silva e Silva\",\n    \"phone\": \"123456789\",\n    \"company\": \"Empresa Exemplo\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/contacts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CONTACT CREATION WEBHOOK",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-HubSpot-Signature",
+						"value": "teste",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"eventId\": 2170898466,\n  \"subscriptionId\": 3421056,\n  \"portalId\": 49639254,\n  \"appId\": 10462125,\n  \"occurredAt\": 1744046504371,\n  \"subscriptionType\": \"contact.creation\",\n  \"attemptNumber\": 5,\n  \"objectId\": 112137283402,\n  \"changeFlag\": \"CREATED\",\n  \"changeSource\": \"INTEGRATION\",\n  \"sourceId\": \"10462125\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/webhook/contact-creation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"webhook",
+						"contact-creation"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
