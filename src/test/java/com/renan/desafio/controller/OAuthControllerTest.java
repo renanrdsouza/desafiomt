@@ -41,4 +41,15 @@ class OAuthControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.url").value("https://example.com/auth"));
     }
+
+    @Test
+    void processOAuthCallback_shouldReturnAccessToken() throws Exception {
+        var authorizationCode = "testCode";
+        var accessToken = "testAccessToken";
+        when(authorizationService.processOauthCallback(authorizationCode)).thenReturn(accessToken);
+
+        mockMvc.perform(get("/oauth/callback").param("code", authorizationCode))
+                .andExpect(status().isOk())
+                .andExpect(content().string(accessToken));
+    }
 }
