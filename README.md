@@ -41,3 +41,15 @@ Portanto, quando a aplicação for iniciada, é gerado um usuário padrão(que s
 O tipo de autentiçação utilizada é o **Basic Auth** e ela deve ser selecionada na aba **Authorization** do Postman.
 
 No projeto existe uma pasta chamada **postman** que contém uma coleção de requisições para facilitar os testes.
+Também é possível testar os endpoints a partir do swagger que pode ser acessado no link:
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+---
+
+Para visualizar as mensagens que estão sendo enviadas para o Kafka, acesse o kafdrop através do link:
+```
+http://localhost:9000
+```
+
