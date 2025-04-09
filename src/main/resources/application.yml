@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: Desafio Hubspot
+
+hubspot:
+  client:
+    id: ${HUBSPOT_CLIENT_ID}
+    secret: ${HUBSPOT_CLIENT_SECRET}
+  redirect:
+    uri: http://localhost:8080/oauth/callback
+  scope: oauth%20crm.objects.contacts.read%20crm.objects.contacts.write
+  authorization:
+    url: https://app.hubspot.com/oauth/authorize
+  token:
+    url: https://api.hubapi.com/oauth/v1/token
+
+resilience4j.ratelimiter:
+  instances:
+    createContactLimiter:
+      limit-for-period: 110
+      limit-refresh-period: 10s
+      timeout-duration: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,resilience4jratelimiter
