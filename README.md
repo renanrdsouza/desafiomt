@@ -1,6 +1,8 @@
 Antes de iniciar a aplicação, é necessário ter o Java 21 instalado e configurado na sua máquina.
 - Também é necessário criar uma conta de desenvolvedor no Hubspot e criar um aplicativo na plataforma.
 - Após isso, no painel da sua conta de desenvolvedor, crie uma conta de testes de desenvolvedor. Ela será utilizada quando acessar a url de autorização gerada.
+- No seu aplicativo do hubspot, no campo **Redirect URL**, coloque o seguinte endereço: `http://localhost:8080/oauth2/callback`.
+- No seu aplicativo do hubspot, em Scopes, adicione os seguintes escopos: `oauth`, `crm.objects.contacts.read`, `crm.objects.contacts.write`.
 - Crie um webhook para o seu aplicativo, para isso, acesse o seu aplicativo e clique na aba de **Webhooks** e depois clique em **Create Subscription(Criar assinatura)**.
 - Na tela de criação de assinatura, selecione o tipo de objeto **Contact(Contato)** e o evento **Created(Criado)**.
 ---
