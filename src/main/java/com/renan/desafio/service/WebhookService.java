@@ -31,21 +31,31 @@ public class WebhookService {
         validatePayload(payload);
         validateSignature(payload, signature);
 
-        /*
-        * Como não foi especificado o que seria "processar o webhook", fica a critério do desenvolvedor
-        * Neste caso, o processamento é enviar o evento para o Kafka, apenas para fins de exemplo.
-        * */
-        try {
-            log.info("Payload: {}", objectMapper.writeValueAsString(payload));
+        String payloadJson = serializePayload(payload);
+        sendToKafka(payloadJson);
+    }
 
-            webhookEventRequestProducer.sendMessage(payload);;
+    private String serializePayload(List<WebhookEvent> payload) throws JsonProcessingException {
+        try {
+            String payloadJson = objectMapper.writeValueAsString(payload);
+            log.info("Payload: {}", payloadJson);
+
+            return payloadJson;
+        } catch (JsonProcessingException e) {
+            log.error("Error serializing webhook payload: {}", e.getMessage());
+
+            throw new JsonProcessingException("Error serializing webhook payload", e) {};
+        }
+    }
+
+    private void sendToKafka(String payloadJson) {
+        try {
+            webhookEventRequestProducer.sendMessage(payloadJson);
 
             log.info("Webhook event sent to Kafka topic");
-        } catch (JsonProcessingException e) {
-            log.error("Error processing webhook event: {}", e.getMessage());
-            throw new JsonProcessingException("Error processing webhook event", e) {};
         } catch (Exception e) {
             log.error("Error sending webhook event to Kafka topic: {}", e.getMessage());
+
             throw new RuntimeException("Error sending webhook event to Kafka topic", e);
         }
     }
@@ -53,6 +63,7 @@ public class WebhookService {
     private void validatePayload(List<WebhookEvent> payload) {
         if (payload == null || payload.isEmpty()) {
             log.error("Payload is null or empty");
+
             throw new IllegalArgumentException("Payload cannot be null or empty");
         }
     }
@@ -60,6 +71,7 @@ public class WebhookService {
     private void validateSignature(List<WebhookEvent> payload, String signature) throws JsonProcessingException {
         if (signature == null || signature.isEmpty()) {
             log.error("Signature is null or empty");
+
             throw new IllegalArgumentException("Signature cannot be null or empty");
         }
 
@@ -67,6 +79,7 @@ public class WebhookService {
 
         if (!signatureValidator.isValid(payloadJson, signature)) {
             log.error("Invalid signature");
+
             throw new InvalidSignatureException("Invalid signature");
         }
     }

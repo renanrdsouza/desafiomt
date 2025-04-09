@@ -51,7 +51,7 @@ class ContactControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/contacts/create")
+        mockMvc.perform(post("/contacts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(contactDataJson))
                 .andExpect(status().isCreated());

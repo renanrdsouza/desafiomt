@@ -21,7 +21,7 @@ public class WebhookEventRequestProducer {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public String sendMessage(List<WebhookEvent> webhookEvent) throws JsonProcessingException {
+    public String sendMessage(String webhookEvent) throws JsonProcessingException {
         String conteudo = objectMapper.writeValueAsString(webhookEvent);
         kafkaTemplate.send(contactCreationRequestTopic, conteudo);
         return "Contact creation event sent for processing";

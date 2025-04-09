@@ -33,61 +33,60 @@ class WebhookServiceTest {
     @InjectMocks
     private WebhookService webhookService;
 
-    @Test
-    void processWebhookEvent_shouldProcessSuccessfullyAndSendMessageToKafka() throws Exception {
-        var signature = "validSignature";
-        var mockedPayload = List.of(new WebhookEvent(
-                1,
-                123,
-                123,
-                123,
-                123,
-                "test",
-                1,
-                123,
-                "test",
-                "test",
-                "123"
-        ));
+@Test
+void processWebhookEvent_shouldProcessSuccessfullyAndSendMessageToKafka() throws Exception {
+    var signature = "validSignature";
+    var mockedPayload = List.of(new WebhookEvent(
+            1,
+            123,
+            123,
+            123,
+            123,
+            "test",
+            1,
+            123,
+            "test",
+            "test",
+            "123"
+    ));
 
-        when(objectMapper.writeValueAsString(mockedPayload)).thenReturn("testPayloadJson");
-        when(signatureValidator.isValid("testPayloadJson", signature)).thenReturn(true);
+    when(objectMapper.writeValueAsString(mockedPayload)).thenReturn("testPayloadJson");
+    when(signatureValidator.isValid("testPayloadJson", signature)).thenReturn(true);
 
+    webhookService.processWebhookEvent(mockedPayload, signature);
+
+    verify(objectMapper, times(2)).writeValueAsString(mockedPayload);
+    verify(signatureValidator, times(1)).isValid("testPayloadJson", signature);
+    verify(webhookEventRequestProducer, times(1)).sendMessage("testPayloadJson");
+}
+
+@Test
+void processWebhookEvent_shouldThrowException_whenSignatureIsInvalid() throws Exception {
+    var signature = "invalidSignature";
+    var mockedPayload = List.of(new WebhookEvent(
+            1,
+            123,
+            123,
+            123,
+            123,
+            "test",
+            1,
+            123,
+            "test",
+            "test",
+            "123"
+    ));
+
+    var payloadJson = "testPayloadJson";
+    when(objectMapper.writeValueAsString(mockedPayload)).thenReturn(payloadJson);
+    when(signatureValidator.isValid(payloadJson, signature)).thenReturn(false);
+
+    assertThrows(InvalidSignatureException.class, () -> {
         webhookService.processWebhookEvent(mockedPayload, signature);
+    });
 
-        verify(objectMapper, times(2)).writeValueAsString(mockedPayload);
-        verify(signatureValidator, times(1)).isValid("testPayloadJson", signature);
-        verify(webhookEventRequestProducer, times(1)).sendMessage(mockedPayload);
-    }
-
-    @Test
-    void processWebhookEvent_shouldThrowException_whenSignatureIsInvalid() throws Exception {
-        // Arrange
-        var signature = "invalidSignature";
-        var mockedPayload = List.of(new WebhookEvent(
-                1,
-                123,
-                123,
-                123,
-                123,
-                "test",
-                1,
-                123,
-                "test",
-                "test",
-                "123"
-        ));
-
-        when(objectMapper.writeValueAsString(mockedPayload)).thenReturn("testPayloadJson");
-        when(signatureValidator.isValid("testPayloadJson", signature)).thenReturn(false);
-
-        // Act & Assert
-        assertThrows(InvalidSignatureException.class, () -> {
-            webhookService.processWebhookEvent(mockedPayload, signature);
-        });
-
-        verify(webhookEventRequestProducer, times(0)).sendMessage(mockedPayload);
-    }
+    verify(webhookEventRequestProducer, times(0)).sendMessage(payloadJson);
+}
 
     @Test
     void processWebhookEvent_shouldThrownInvalidSignatureException() throws JsonProcessingException {
@@ -122,31 +121,33 @@ class WebhookServiceTest {
         });
     }
 
-    @Test
-    void processWebhookEvent_shouldThrowException_whenJsonProcessingFails() throws JsonProcessingException {
-        var signature = "validSignature";
-        var mockedPayload = List.of(new WebhookEvent(
-                1,
-                123,
-                123,
-                123,
-                123,
-                "test",
-                1,
-                123,
-                "test",
-                "test",
-                "123"
-        ));
+@Test
+void processWebhookEvent_shouldThrowException_whenJsonProcessingFails() throws JsonProcessingException {
+    var signature = "validSignature";
+    var mockedPayload = List.of(new WebhookEvent(
+            1,
+            123,
+            123,
+            123,
+            123,
+            "test",
+            1,
+            123,
+            "test",
+            "test",
+            "123"
+    ));
 
-        when(objectMapper.writeValueAsString(anyList())).thenThrow(JsonProcessingException.class);
+    var payloadJson = "testPayloadJson";
 
-        assertThrows(JsonProcessingException.class, () -> {
-            webhookService.processWebhookEvent(mockedPayload, signature);
-        });
+    when(objectMapper.writeValueAsString(anyList())).thenThrow(JsonProcessingException.class);
 
-        verify(webhookEventRequestProducer, times(0)).sendMessage(mockedPayload);
-    }
+    assertThrows(JsonProcessingException.class, () -> {
+        webhookService.processWebhookEvent(mockedPayload, signature);
+    });
+
+    verify(webhookEventRequestProducer, times(0)).sendMessage(payloadJson);
+}
 
     @Test
     void processWebhookEvent_shouldThrowException_whenEncodingFails() throws Exception {
