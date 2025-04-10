@@ -27,7 +27,7 @@ public class ContactController {
 
     @Operation(description = "Create a new contact")
     @PostMapping
-    public ResponseEntity<String> createContact(@RequestBody ContactData contactData) {
+    public ResponseEntity<Void> createContact(@RequestBody ContactData contactData) {
         log.info("Processing contact creation");
 
         String accessToken = tokenService.getAccessToken();
